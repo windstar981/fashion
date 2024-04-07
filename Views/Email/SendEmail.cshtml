@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Send Test Email";
+    Layout = "~/Views/Shared/_Custom_Layout.cshtml";
+}
+
+<h2>Send Test Email</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
+else if (ViewBag.Error != null)
+{
+    <p>@ViewBag.Error</p>
+}
