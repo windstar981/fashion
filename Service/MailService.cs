@@ -10,7 +10,7 @@ namespace fashion.Service
             string smtpServer = "smtp.gmail.com";
             int smtpPort = 587; // Cổng SMTP
             string userName = "mailcanhbao981@gmail.com";
-            string password = "arfqorjbghnvxsuk";
+            string password = "pass";
 
             // Tạo nội dung email
             MailMessage mail = new MailMessage();
