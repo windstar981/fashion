@@ -27,6 +27,8 @@ public partial class Customer
 
     public string? ActivationCode { get; set; }
 
+    public byte? StatusActive { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

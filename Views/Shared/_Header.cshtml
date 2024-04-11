@@ -3,9 +3,11 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     var isLoggedIn = @HttpContextAccessor.HttpContext.Session.GetInt32("IdCustomer") != null;
+    var idUser = @HttpContextAccessor.HttpContext.Session.GetInt32("IdCustomer");
 }
 
 <!-- Topbar Start -->
+<input id="idUser" value="@idUser" hidden />
 <div class="container-fluid">
     <div class="row bg-secondary py-2 px-xl-5">
         <div class="col-lg-6 d-none d-lg-block">
@@ -60,7 +62,7 @@
                 <i class="fas fa-heart text-primary"></i>
                 <span class="badge">0</span>
             </a>
-            <a href="" class="btn border">
+            <a asp-controller="Carts" asp-action="index" class="btn border">
                 <i class="fas fa-shopping-cart text-primary"></i>
                 <span class="badge">0</span>
             </a>

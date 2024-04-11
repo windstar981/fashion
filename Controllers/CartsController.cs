@@ -21,7 +21,15 @@ namespace fashion.Controllers
         // GET: Carts
         public async Task<IActionResult> Index()
         {
-            //var fashionContext = _context.Carts.Include(c => c.Customer).Include(c => c.Product);
+            if (HttpContext.Session.GetInt32("IdCustomer") == null)
+            {
+                //Đã đăng nhập, chuyển hướng đến trang chính
+                return RedirectToAction("Login","Home");
+            }
+            var cusId = HttpContext.Session.GetInt32("IdCustomer");
+            //Console.WriteLine(cusId);
+            var cart = _context.Carts.Include(c => c.Product).Where(c => c.CustomerId == cusId);
+            ViewBag.ListProductInCart = cart;
             return View(/*await fashionContext.ToListAsync()*/);
         }
 
@@ -147,23 +155,36 @@ namespace fashion.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddToCart(int id)
+        public async Task<IActionResult> AddToCart(int id, string type = "plus")
         {
+            if (HttpContext.Session.GetInt32("IdCustomer") == null)
+            {
+                // Đã đăng nhập, chuyển hướng đến trang chính
+                return Json(new { success = false, content = "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!!" }); 
+            }
             if (id == null)
             {
                 return NotFound();
             }
-            var cart = _context.Carts.FirstOrDefault(c => c.ProductId == id && c.CustomerId == 1);
+            var UserId = HttpContext.Session.GetInt32("IdCustomer");
+            var cart = _context.Carts.FirstOrDefault(c => c.ProductId == id && c.CustomerId == UserId);
             if(cart is not null)
             {
-                cart.Quantity = cart.Quantity + 1;
+                if(type.Equals("plus"))
+                {
+                    cart.Quantity = cart.Quantity + 1;
+                }
+                else
+                {
+                    cart.Quantity = cart.Quantity - 1;
+                }
                 _context.SaveChanges();
                 return Json(new { success = true });
             }
             else
             {
                 var new_cart = new Cart();
-                new_cart.CustomerId = 1;
+                new_cart.CustomerId = HttpContext.Session.GetInt32("IdCustomer");
                 new_cart.Quantity = 1;
                 new_cart.ProductId = id;
                 _context.Carts.Add(new_cart);
@@ -197,5 +218,6 @@ namespace fashion.Controllers
         {
             return _context.Carts.Any(e => e.Id == id);
         }
+
     }
 }

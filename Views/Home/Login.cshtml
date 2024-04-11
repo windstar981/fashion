@@ -3,7 +3,9 @@
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_Custom_Layout.cshtml";
 }
+
 <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Login">
+    <h3>@ViewBag.success</h3>
 <div class="row justify-content-md-center">
     <div class="col-md-4">
         <div class="card">

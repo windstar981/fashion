@@ -113,7 +113,6 @@
         button.parent().parent().find('input').val(newVal);
     });
     $('.add-to-cart-btn').click(function () {
-        console.log(1234);
         var productId = $(this).attr('product-id');
         $.ajax({
             url: '/Carts/AddToCart/' + productId,
@@ -124,8 +123,31 @@
                     // Redirect tới trang chủ hoặc bất kỳ trang nào bạn muốn ở đây
                     //window.location.href = '/';
                 } else {
-                    alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+                    $.notify(response.content, "warn");
+                    window.location.href = 'http://localhost:5074/Home/Login';
                 }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+            }
+        });
+    });
+
+    $('.btn-test').click(function () {
+        console.log(1234);
+        var dataToSend = {
+            name: 'hieu',
+            age: 18,
+            address: 'YourAddressHere'
+        };
+
+        $.ajax({
+            url: '/Home/Test',
+            data: JSON.stringify(dataToSend),
+            method: 'POST',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response);
             },
             error: function () {
                 alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');

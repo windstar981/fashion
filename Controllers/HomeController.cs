@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Plugins;
 namespace fashion.Controllers
 {
     public class HomeController : Controller
@@ -75,11 +78,17 @@ namespace fashion.Controllers
 
                     customer.ActivationCode = randomNumber.ToString();
 
+                    string body = "Click <a href='http://localhost:5074/home/activation?email=" 
+                        + customer.Email + "&code="+ randomNumber.ToString() +"'>here</a>" +
+                        " to activation account!!!";
+
                     _context.Customers.Add(customer);
                     _context.SaveChanges();
+
                     // gui mail thong bao dang ky thanh cong
-                    MailService.SendRegistrationEmail(customer.Email);
-                    return RedirectToAction("Login");
+                    ViewBag.success = "Bạn đã đăng ký thành công vui lòng truy cập email để kích hoạt tài khoản!!";
+                    MailService.SendRegistrationEmail(customer.Email, body);
+                    return View("Login");
                 }
                 else
                 {
@@ -137,7 +146,7 @@ namespace fashion.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customer = await _context.Customers.FirstOrDefaultAsync(s => s.Email.Equals(login.Email));
+                var customer = await _context.Customers.FirstOrDefaultAsync(s => s.Email.Equals(login.Email) && s.StatusActive == 1);
                 if (customer != null)
                 {
                     if (PasswordHasher.VerifyPassword(customer.Pd, login.Password))
@@ -168,5 +177,40 @@ namespace fashion.Controllers
             return RedirectToAction("Login", "Home");
         }
 
+       
+
+        public async Task<IActionResult> Activation(string email, string code)
+        {
+            // kiểm tra email và password không được trống nếu trống thì trả về view kèm lỗi gì đó
+            if (email.IsNullOrEmpty() || code.IsNullOrEmpty())
+            {
+                ViewBag.error = "Kích hoạt tài khoản không thành công!!";
+                return View("Login");
+            }
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(s => s.Email.Equals(email) && s.ActivationCode == code);
+            if (customer != null)
+            {
+                customer.StatusActive = 1;
+                _context.SaveChanges();
+                ViewBag.success = "Kích hoạt tài khoản thành công!!";
+                return View("Login");
+            }
+            else
+            {
+                ViewBag.error = "Kích hoạt tài khoản không thành công!!";
+            }
+
+            return View("Login");
+        }
+
+        [HttpPost]
+        public string Test([FromBody] dynamic data)
+        {
+            string name = data.GetProperty("name").GetString();
+            return name;
+        }
+
     }
+
 }

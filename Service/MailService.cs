@@ -4,7 +4,7 @@ namespace fashion.Service
 {
     public class MailService
     {
-        public static void SendRegistrationEmail(string emailAddress)
+        public static void SendRegistrationEmail(string emailAddress, string body = "")
         {
             // Cấu hình thông tin email
             string smtpServer = "smtp.gmail.com";
@@ -14,10 +14,11 @@ namespace fashion.Service
 
             // Tạo nội dung email
             MailMessage mail = new MailMessage();
+            mail.IsBodyHtml = true;
             mail.From = new MailAddress(userName);
             mail.To.Add(new MailAddress(emailAddress));
             mail.Subject = "Registration Confirmation";
-            mail.Body = "Thank you for registering with us!";
+            mail.Body = body;
 
             // Gửi email sử dụng SmtpClient
             SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);

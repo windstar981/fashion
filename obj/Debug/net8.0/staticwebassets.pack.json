@@ -161,6 +161,10 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
+      "Id": "F:\\fashion\\wwwroot\\js\\cart.js",
+      "PackagePath": "staticwebassets\\js\\cart.js"
+    },
+    {
       "Id": "F:\\fashion\\wwwroot\\js\\main.js",
       "PackagePath": "staticwebassets\\js\\main.js"
     },

@@ -178,6 +178,9 @@ public partial class FashionContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("phone");
+            entity.Property(e => e.StatusActive)
+                .HasDefaultValue((byte)0)
+                .HasColumnName("status_active");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
         });

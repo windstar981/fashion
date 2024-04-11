@@ -254,3 +254,4 @@ F:\fashion\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 F:\fashion\bin\Debug\net8.0\MailKit.dll
 F:\fashion\bin\Debug\net8.0\MimeKit.dll
 F:\fashion\bin\Debug\net8.0\NETCore.MailKit.dll
+F:\fashion\obj\Debug\net8.0\fashion.sourcelink.json

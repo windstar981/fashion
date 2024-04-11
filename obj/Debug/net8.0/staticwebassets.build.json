@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "U6sCQM3VOtF04hINY0rXq3rY1ruHF+NPRQ2NY/HzMGk=",
+  "Hash": "zylHFD1Z4wnn444hjzgWkdWpMWa6UV+yMdr0TWx2csU=",
   "Source": "fashion",
   "BasePath": "_content/fashion",
   "Mode": "Default",
@@ -756,6 +756,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "F:\\fashion\\wwwroot\\js\\cart.js",
+      "SourceId": "fashion",
+      "SourceType": "Discovered",
+      "ContentRoot": "F:\\fashion\\wwwroot\\",
+      "BasePath": "_content/fashion",
+      "RelativePath": "js/cart.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\cart.js"
     },
     {
       "Identity": "F:\\fashion\\wwwroot\\js\\main.js",
