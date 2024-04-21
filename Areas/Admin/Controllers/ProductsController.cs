@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fashion.Data;
 using System.Web;
+using System.Collections;
 namespace fashion.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -213,7 +214,7 @@ namespace fashion.Areas.Admin.Controllers
             var price = HttpContext.Request.Form["price"];
             var quantity = HttpContext.Request.Form["quantity"];
             var brand = HttpContext.Request.Form["brands"];
-            var category = HttpContext.Request.Form["categories"];
+            string category = HttpContext.Request.Form["categories"];
             var files = HttpContext.Request.Form.Files;
 
             var size = HttpContext.Request.Form["size"];
@@ -224,12 +225,15 @@ namespace fashion.Areas.Admin.Controllers
             {
                 listInputAttr.Add(data.Name, HttpContext.Request.Form[data.Name]);
             }
-            
+
+
+
             // lưu dữ liệu vào db
             // cần lưu những bảng nào:
             // 1. Product, 2.  lnk_product_attribute, 3. lnk_product_category
             // lưu bảng product
             // nên validate dữ liệu trước khi lưu => bạn tự validate
+            var url = "";
             foreach (var file in files)
             {
                 if (file != null && file.Length > 0)
@@ -241,9 +245,55 @@ namespace fashion.Areas.Admin.Controllers
                     {
                         file.CopyTo(stream);
                     }
+                    url += "Uploads/" + fileName + ",";
                 }
             }
-            
+            var product = new Product();
+            product.Name = name;
+            product.Slug = slug;
+            product.Abstract = abstracts;
+            product.Description = desc;
+            product.Price = Convert.ToInt32(price);
+            product.Quantity = Convert.ToInt32(quantity);
+            product.BrandId = Convert.ToInt32(brand);
+            product.Img = url;
+
+            _context.Add(product);
+            _context.SaveChanges();
+
+            // lưu bảng lnk_product_attribute và lnk_product_category
+            var ProductId = product.Id;
+            string[] parts = category.Split(',');
+
+            var lnkProductCategory = new List<LnkProductCategory>();
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                var lnk = new LnkProductCategory();
+                lnk.ProductId = ProductId;
+                lnk.CategoryId = Convert.ToInt32(parts[i]);
+                lnkProductCategory.Add(lnk);
+            }
+            _context.LnkProductCategories.AddRange(lnkProductCategory);
+            _context.SaveChanges();
+
+            var lnkProductAttribute = new List<LnkProductAttribute>();
+
+            foreach (var key in listInputAttr.Keys)
+            {
+                var value = listInputAttr[key];
+                string[] attrValues = value.Split(',');
+                for (int i = 0; i < attrValues.Length; i++)
+                {
+                    var lnkAttr = new LnkProductAttribute();
+                    lnkAttr.ProductId = ProductId;
+                    lnkAttr.AttributeId = Convert.ToInt32(attrValues[i]);
+                    lnkProductAttribute.Add(lnkAttr);
+                }
+            }
+            _context.LnkProductAttributes.AddRange(lnkProductAttribute);
+            _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
 

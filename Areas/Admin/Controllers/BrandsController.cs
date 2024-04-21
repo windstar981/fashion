@@ -44,6 +44,7 @@ namespace fashion.Areas.Admin.Controllers
         }
 
         // GET: Admin/Brands/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -52,17 +53,87 @@ namespace fashion.Areas.Admin.Controllers
         // POST: Admin/Brands/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Brand brand, IFormFile img)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var fileName = "";
+        //        if (img != null && img.Length > 0)
+        //        {
+        //            // Lưu tập tin vào ổ đĩa hoặc xử lý tùy ý
+        //            fileName = Path.GetFileName(img.FileName);
+        //            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+        //            using (var stream = new FileStream(path, FileMode.Create))
+        //            {
+        //                img.CopyTo(stream);
+        //            }
+        //        }
+        //        brand.Img = "uploads/" + fileName;
+        //        _context.Add(brand);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View();
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateBrand()
+        //{
+        //    var img = HttpContext.Request.Form.Files.FirstOrDefault();
+
+        //    var fileName = "";
+        //    if (img != null && img.Length > 0)
+        //    {
+        //        // Lưu tập tin vào ổ đĩa hoặc xử lý tùy ý
+        //        fileName = Path.GetFileName(img.FileName);
+        //        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+        //        using (var stream = new FileStream(path, FileMode.Create))
+        //        {
+        //            img.CopyTo(stream);
+        //        }
+        //    }
+        //    var name = HttpContext.Request.Form["Name"];
+        //    var desc = HttpContext.Request.Form["Description"];
+        //    var slug = HttpContext.Request.Form["Slug"];
+
+        //    var brand = new Brand();
+        //    brand.Name = name;
+        //    brand.Description = desc;
+        //    brand.Slug = slug;
+        //    brand.Img = "Uploads/" + fileName;
+
+        //    //brand.Img = "uploads/" + fileName;
+        //    _context.Add(brand);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Img,Slug,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt")] Brand brand)
+        public async Task<IActionResult> Create(Brand brand)
         {
             if (ModelState.IsValid)
             {
+                var img = HttpContext.Request.Form.Files.FirstOrDefault();
+                var fileName = "";
+                if (img != null && img.Length > 0)
+                {
+                    // Lưu tập tin vào ổ đĩa hoặc xử lý tùy ý
+                    fileName = Path.GetFileName(img.FileName);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        img.CopyTo(stream);
+                    }
+                }
+                brand.Img = "uploads/" + fileName;
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return View();
         }
 
         // GET: Admin/Brands/Edit/5
@@ -86,8 +157,9 @@ namespace fashion.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Img,Slug,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt")] Brand brand)
+        public async Task<IActionResult> Edit(int id, Brand brand, IFormFile? picture, string CurrentImgPath)
         {
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (id != brand.Id)
             {
                 return NotFound();
@@ -97,6 +169,14 @@ namespace fashion.Areas.Admin.Controllers
             {
                 try
                 {
+                    if(picture != null && picture.Length > 0)
+                    {
+                        brand.Img = "Uploads/" + Path.GetFileName(picture.FileName);
+                    }
+                    else
+                    {
+                        brand.Img = CurrentImgPath;
+                    }
                     _context.Update(brand);
                     await _context.SaveChangesAsync();
                 }
